@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GIPHYSearch</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="start_typing">Start typing</string>
+    <string name="trending_gifs">Trending gifs</string>
+</resources>
