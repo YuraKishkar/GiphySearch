@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GiphySearch</string>
+    <string name="start_typing">Start typing</string>
+    <string name="trending_gifs">Trending gifs</string>
+    <string name="search_gif">Search gifs</string>
+    <string name="send_gif">Send</string>
+    <string name="detail_name"></string>
+
+</resources>
