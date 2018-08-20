@@ -1,6 +1,7 @@
 package com.example.liban.giphysearch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -11,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.example.liban.giphysearch.DTO.Data;
-import com.example.liban.giphysearch.DTO.ListData;
+import com.example.liban.giphysearch.dto.Data;
+import com.example.liban.giphysearch.dto.ListData;
 import com.example.liban.giphysearch.mvp.model.DataSource;
-import com.stfalcon.frescoimageviewer.ImageViewer;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,6 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
     private ListData mListData;
     private Context mContext;
-    private DataSource mDataSource;
-//    private ImageListener mImageListener;
     private boolean isTrendingContains;
 
     public ListData getListData() {
@@ -41,11 +40,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void setTrendingContains(boolean trendingContains) {
         isTrendingContains = trendingContains;
     }
+        public RecyclerAdapter(){
 
-//    public interface ImageListener
-//    {
-//        void onClicked(String url);
-//    }
+        }
 
     public RecyclerAdapter(ListData listData, Context context) {
         mListData = listData;
@@ -106,15 +103,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         @Override
         public void onClick(View view) {
-            int position = getPosition();
+            int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
-                //mImageListener.onClicked();
-                List<String> urls = new ArrayList<>();
-                urls.add(mListData.getData().get(position)
+                Intent intent = new Intent(mContext, DetailGif.class);
+                intent.putExtra(DetailGif.URL, mListData.getData().get(position)
                         .getImages().getFixedHeight().getUrl());
-                new ImageViewer.Builder(mContext,urls)
-                        .setStartPosition(Color.BLACK)
-                        .show();
+                mContext.startActivity(intent);
             }
         }
     }

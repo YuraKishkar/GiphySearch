@@ -1,26 +1,26 @@
 package com.example.liban.giphysearch;
 
 import android.app.ProgressDialog;
+import android.arch.paging.PagedList;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.liban.giphysearch.DTO.Data;
-import com.example.liban.giphysearch.DTO.ListData;
+import com.example.liban.giphysearch.dto.ListData;
 import com.example.liban.giphysearch.mvp.presenter.Presenter;
 import com.example.liban.giphysearch.mvp.view.MainView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
@@ -31,75 +31,79 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private Presenter mPresenter;
     private RecyclerAdapter mRecyclerAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mTextView;
+    private boolean isRefresh;
 
+    public void setRefresh(boolean refresh) {
+        isRefresh = refresh;
+    }
+
+    public boolean isRefresh() {
+        return isRefresh;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mPresenter = new Presenter(this);
+        mPresenter = new Presenter(this, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView = findViewById(R.id.recycler_id);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mEditText = findViewById(R.id.edit_search_query_id);
+        mTextView = findViewById(R.id.status_text_id);
         mSwipeRefreshLayout = findViewById(R.id.swipe_id);
         initListeners();
 
-
     }
 
+
     private void initListeners() {
-        mEditText.addTextChangedListener(new AddListenerTextChanged(mEditText, mPresenter));
+        mEditText.addTextChangedListener(new AddListenerTextChanged(mPresenter));
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mPresenter.refresh();
-//            mPresenter.requestTrending(0);
         });
     }
 
 
     @Override
     public void onRequestTrending(ListData listData) {
-        //if (mRecyclerAdapter == null) {
-        mRecyclerAdapter = new RecyclerAdapter(listData, this);
-        mRecyclerAdapter.setTrendingContains(true);
-        mRecyclerView.setAdapter(mRecyclerAdapter);
-//        mSwipeRefreshLayout.setRefreshing(false);
 
+        if (mRecyclerAdapter == null) {
+            mRecyclerAdapter = new RecyclerAdapter(listData, this);
+            mRecyclerAdapter.setTrendingContains(true);
+            mRecyclerView.setAdapter(mRecyclerAdapter);
+        }
+        if (isRefresh) {
+            mRecyclerAdapter = new RecyclerAdapter(listData, this);
+            mRecyclerAdapter.setTrendingContains(true);
+            mRecyclerView.setAdapter(mRecyclerAdapter);
+            setRefresh(false);
+        }
 
-//            onScrollRecycler(listData, new OnPositionListEnd() {
-//                @Override
-//                public void onEnd() {
-//                    mOffsetCount += 25;
-//                    mPresenter.requestTrending(mOffsetCount);
-//                }
-//            });
-        //}
-        onScrollRecycler(listData);
-//        if (mRecyclerAdapter.getListData().getData().size() != 0) {
-//            mRecyclerAdapter.addNewGifs(listData.getData());
-//        }
-
-
+        onScrollRecycler(listData, new AddListener() {
+            @Override
+            public void onEnd() {
+                mOffsetCount += 25;
+                mPresenter.requestTrending(mOffsetCount);
+            }
+        });
     }
 
-    private int mOffsetCount;
+    private int mOffsetCount = 0;
 
-    private void onScrollRecycler(final ListData listData) {
+    private void onScrollRecycler(final ListData listData, AddListener addListener) {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1)) {
-                    mOffsetCount += 25;
-                    mPresenter.requestTrending(mOffsetCount);
-                    if (mRecyclerAdapter.getListData().getData().size() != 0) {
+
+                    if (mRecyclerAdapter.isTrendingContains()) {
                         mRecyclerAdapter.addNewGifs(listData.getData());
+                        addListener.onEnd();
                     }
-//                    if (mRecyclerAdapter.isTrendingContains()) {
-//                        onPositionListEnd.onEnd();
-//                    } else {
-//
-//                    }
+
                 }
             }
         });
@@ -108,14 +112,19 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void onRequestSearch(ListData listDataSearch) {
+        mTextView.setText(getResources().getString(R.string.search_gif));
         mRecyclerAdapter.clearData();
         mRecyclerAdapter.addNewGifs(listDataSearch.getData());
         mRecyclerAdapter.setTrendingContains(false);
-        onScrollRecycler(listDataSearch);
+
     }
 
     @Override
     public void onRefresh() {
+        setRefresh(true);
+        mTextView.setText(getResources().getString(R.string.trending_gifs));
+        mTextView.setVisibility(View.VISIBLE);
+        mRecyclerAdapter.setTrendingContains(true);
         mPresenter.requestTrending(0);
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -123,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void onError(String messageError) {
-        Toast.makeText(this, messageError, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You are not connected to the Internet" , Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -137,6 +146,3 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
 
 }
-
-
-
