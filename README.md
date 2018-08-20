@@ -1,6 +1,8 @@
 The application shows a list of GIF trends, as well as the search for specific GIFs.
  It is possible to view any GIF in full size and send them.
+ -------
 **Import:**
+------
 	1 You can directly import GitHub projects into Android Studio. **File -> New -> Project from Version Control -> GitHub.** Then enter your GitHub username and password. Select the repository and hit **clone**. The github repo will be created as a new project in android studio. And you need to generate a Gradle( **Tools-> Android-> Sync Project with Gradle Files**).
  **OR:**
  ---------------
