@@ -1,5 +1,5 @@
-###The application shows a list of GIF trends, as well as the search for specific GIFs.
- ###It is possible to view any GIF in full size and send them.
+### The application shows a list of GIF trends, as well as the search for specific GIFs.
+ ### It is possible to view any GIF in full size and send them.
  -------
 **Import:**
 ------
