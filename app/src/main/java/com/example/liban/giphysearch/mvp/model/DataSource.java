@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DataSource {
     private Api api;
     private static final String BASE_URL = "http://api.giphy.com/v1/gifs/";
-    private static final String API_KEY = "h6PnlsFKvt63GQcIV9ehd8O8akYdk0ys";
+    private static final String API_KEY = "t5Roj1Z4Lnp0xIQj707W98dEOxz0S95o";
 
 
     public interface DataSourceResult {

@@ -63,6 +63,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         .getImages().getFixedHeight().getUrl()))
 
                 .into(holder.mImageView);
+        if (!(holder.mImageView.getDrawable() == null)) {
+            holder.mProgressBar.setVisibility(View.GONE);
+        }
 
 
     }

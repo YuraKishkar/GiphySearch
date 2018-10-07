@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
@@ -41,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mPresenter = new Presenter(this, this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        StaggeredGridLayoutManager gridLayoutManager =
+                new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView = findViewById(R.id.recycler_id);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mEditText = findViewById(R.id.edit_search_query_id);
@@ -69,9 +71,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
             mRecyclerView.setAdapter(mRecyclerAdapter);
         }
         if (isRefresh) {
-            mRecyclerAdapter = new RecyclerAdapter(listData, this);
             mRecyclerAdapter.setTrendingContains(true);
-            mRecyclerView.setAdapter(mRecyclerAdapter);
+            mRecyclerAdapter.clearData();
+            mRecyclerAdapter.addNewGifs(listData.getData());
+
             setRefresh(false);
         }
 
@@ -94,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 if (!recyclerView.canScrollVertically(1)) {
 
                     if (mRecyclerAdapter.isTrendingContains()) {
-                        mRecyclerAdapter.addNewGifs(listData.getData());
                         addListener.onEnd();
+                        mRecyclerAdapter.addNewGifs(listData.getData());
                     }
 
                 }
