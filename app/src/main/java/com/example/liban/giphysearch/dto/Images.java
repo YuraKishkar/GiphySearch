@@ -15,6 +15,28 @@ public class Images {
     @SerializedName("original")
     @Expose
     private Original original;
+    @SerializedName("preview_gif")
+    @Expose
+    private Preview_gif preview_gif;
+    @SerializedName("fixed_height_downsampled")
+    @Expose
+    private FixedHeightDownsampled fixedHeightDownsampled;
+
+    public FixedHeightDownsampled getFixedHeightDownsampled() {
+        return fixedHeightDownsampled;
+    }
+
+    public void setFixedHeightDownsampled(FixedHeightDownsampled fixedHeightDownsampled) {
+        this.fixedHeightDownsampled = fixedHeightDownsampled;
+    }
+
+    public Preview_gif getPreview_gif() {
+        return preview_gif;
+    }
+
+    public void setPreview_gif(Preview_gif preview_gif) {
+        this.preview_gif = preview_gif;
+    }
 
     public Original getOriginal() {
         return original;

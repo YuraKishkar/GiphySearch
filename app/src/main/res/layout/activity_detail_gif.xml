@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.liban.giphysearch.DetailGif">
+    <ProgressBar
+        android:id="@+id/id_bar_detail"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="visible"/>
+
 
     <ImageView
         android:id="@+id/big_gif_id"

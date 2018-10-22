@@ -1,6 +1,8 @@
 package com.example.liban.giphysearch;
 
 import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mTextView;
     private boolean isRefresh;
+    private LinearLayout mLinearLayout;
 
     public void setRefresh(boolean refresh) {
         isRefresh = refresh;
@@ -41,10 +45,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mLinearLayout = findViewById(R.id.id_main_layout);
         mPresenter = new Presenter(this, this);
         StaggeredGridLayoutManager gridLayoutManager =
-                new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView = findViewById(R.id.recycler_id);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mEditText = findViewById(R.id.edit_search_query_id);
         mTextView = findViewById(R.id.status_text_id);
@@ -56,9 +62,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     private void initListeners() {
         mEditText.addTextChangedListener(new AddListenerTextChanged(mPresenter));
-        mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            mPresenter.refresh();
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.refresh());
     }
 
 
@@ -78,12 +82,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
             setRefresh(false);
         }
 
-        onScrollRecycler(listData, new AddListener() {
-            @Override
-            public void onEnd() {
-                mOffsetCount += 25;
-                mPresenter.requestTrending(mOffsetCount);
-            }
+        onScrollRecycler(listData, () -> {
+            mOffsetCount += 25;
+            mPresenter.requestTrending(mOffsetCount);
         });
     }
 
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @Override
     public void onError(String messageError) {
-        Toast.makeText(this, "You are not connected to the Internet", Toast.LENGTH_LONG).show();
+        Snackbar.make(mLinearLayout, messageError, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

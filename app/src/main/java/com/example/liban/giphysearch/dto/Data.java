@@ -64,6 +64,8 @@ public class Data {
     @Expose
     private String title;
 
+
+
     public String getTitle() {
         return title;
     }
