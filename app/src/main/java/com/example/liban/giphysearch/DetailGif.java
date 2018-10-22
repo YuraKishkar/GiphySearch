@@ -39,7 +39,6 @@ public class DetailGif extends AppCompatActivity {
         mStringUrl = intent.getStringExtra(URL);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         Glide.with(this)
                 .asGif()
                 .load(mStringUrl)
