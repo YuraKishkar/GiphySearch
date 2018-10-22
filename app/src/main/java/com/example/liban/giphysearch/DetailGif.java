@@ -24,7 +24,7 @@ public class DetailGif extends AppCompatActivity {
 
     public static final String URL = "URL_GIF";
     private ImageView mImageView;
-    private Button mButton;
+
     private String mStringUrl;
     private ShareActionProvider shareActionProvider;
     private ProgressBar mProgressBar;
