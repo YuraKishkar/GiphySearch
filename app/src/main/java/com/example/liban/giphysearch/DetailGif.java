@@ -45,12 +45,14 @@ public class DetailGif extends AppCompatActivity {
                 .load(mStringUrl)
                 .listener(new RequestListener<GifDrawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<GifDrawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<GifDrawable> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(GifDrawable resource, Object model,
+                                                   Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
                         mProgressBar.setVisibility(View.GONE);
                         return false;
                     }
